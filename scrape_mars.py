@@ -9,6 +9,7 @@ def scrape():
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=False)
     results  = {}
+
     #Mars News
    # Define news website
     url = "https://redplanetscience.com/"
@@ -17,16 +18,11 @@ def scrape():
     # Create BeautifulSoup
     html = browser.html
     mars_news = BeautifulSoup(html, 'html.parser')
-    print(mars_news)
 
     # Retrieve all elements that contain the news information
     news_title = mars_news.body.find('div', class_='content_title').text
 
     news_parag = mars_news.body.find('div', class_='article_teaser_body').text
-
-    # Print news
-    print(f"The title is: {news_title}")
-    print(f"The descriptive paragraph is: {news_parag}")
 
     #Mars Image
     # Define image website
@@ -36,7 +32,6 @@ def scrape():
     # HTML with soup
     html = browser.html
     image_mars = BeautifulSoup(html, 'html.parser')
-    print(image_mars)
 
     button = image_mars.find_all('button')[1].find_parent()["href"]
 
@@ -53,7 +48,7 @@ def scrape():
     mars_df.columns = ["Description", "Mars", "Earth"]
     mars_df.set_index('Description')
 
-    mars_df.to_html('mars_facts.html')
+    mars_facts = mars_df.to_html() 
 
     # Hemisphere
     # Visit URL
@@ -66,12 +61,14 @@ def scrape():
     # Create soup
     html = browser.html
     image_hem = BeautifulSoup(html, 'html.parser')
-    # print(image_hem)
-
-    # Create lopps to gather images
+    
+    #Create loops to gather images
     links = browser.links.find_by_partial_text("Hemisphere Enhanced")
 
+    hemispheres_list = []
+
     for index, link in enumerate(links):
+        img_link_dict = {}
         if index > 0:
             browser.back()
             time.sleep(2)
@@ -82,21 +79,18 @@ def scrape():
         time.sleep(1)
         inner_html = browser.html
         inner_soup = BeautifulSoup(inner_html, 'html.parser')
-        downloads = inner_soup.find_all('div', class_='downloads')
-        for download in downloads:
-            # print(download)
-            lis = download.find_all("li")
-            # print(lis)
-            for li in lis:
-                if "Original" in li.text:
-                    partial_link = li.find('a')['href']
-                    img_link_dict[title] = f'{hem_url}{partial_link}'
+        downloads = inner_soup.find('div', class_='downloads')
+        
+        img_link_dict['title'] = f'{title}'
+        img_link_dict['link'] = f"{hem_url}{downloads.find('a')['href']}"
+        hemispheres_list.append(img_link_dict)
+    
     results = {
        'latesttitle': news_title,
-       'lastestparagraph': news_parag,
+       'latestparagraph': news_parag,
        'imagemars': full_image_url,
        'factstable': mars_facts,
-       'hemisphere_image_urls': img_link_dict
+       'hemisphere_image_urls': hemispheres_list
     }
 
     # Stop browser

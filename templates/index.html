@@ -16,37 +16,35 @@
             <h1>Mission to Mars</h1>
             <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data!</a></p>
         </div>
-        {% for item in mars %}
         <div class="row">
             <div class="col-md-12">
                 <h2>Latest Mars News</h2>
-                <h5>{{item.latesttitle}}</h5>
-                <p>{{item.latestparagraph}}</p>
+                <h4>{{mars.latesttitle}}</h4>
+                <p>{{mars.latestparagraph}}</p>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                <h2>Featured Mars Image</h2>
-                <img src={{item.imagemars}} height=400px width=600 px>
-                <p></p>
+                <h3>Featured Mars Image</h3>
+                <img src={{mars.imagemars}} height=400px width=500px>
             </div>
             <div class="col-md-6">
                 <div class="row">
                     <h3>Mars Facts</h3>
-                    <p> {{item.factstable | safe}} </p>
+                    <p> {{mars.factstable | safe}} </p>
                 </div>
             </div>
         </div>
 
-        <h1 align="center"> Mars Hemispheres</h1>
+        <h1> Mars Hemispheres</h1>
         <br>
 
-        {% for picture in results.hemisphere_image_urls %}
+        {% for picture in mars.hemisphere_image_urls %}
         <div class="col-md-6">
             <div class="card" style="width: 18rem;">
-                <img src="{{picture.img_url}}" width="600" height="600" alt="Mars Image">
+                <img src="{{picture.link}}" width="600" height="600" alt="Mars Image">
                 <div class="card-body">
-                    <p class="card-text"> {{ picture.title }}
+                    <p class="card-text"> {{picture.title}}
                 </div>
             </div>
         </div>
